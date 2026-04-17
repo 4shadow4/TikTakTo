@@ -7,6 +7,41 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <div id="container">
+        <h1>Tik-Tak-Toe</h1>
+        <div>
+            <div>
+                <h3 id="Player1"></h3>
+                <p id="scorePl1"></p>
+            </div>
+            <div>
+                <h3 id="Player2"></h3>
+                <p id="scorePl2"></p>
+            </div>
+        </div>
+        <div id="tiktaktoe">
+
+        </div>
+        <div>
+            <button id="newMatch"></button>
+            <button id="newGame"></button>
+        </div>
+
+    </div>
+    <div id="startGame">    
+        <form id="form">
+            <p>
+                <label for="pl1name"></label>
+                <input type="text" name="pl1name" id="pl1name">
+            </p>
+            <p>
+                <label for="pl2name"></label>
+                <input type="text" name="pl2name" id="pl2name">
+            </p>
+            <button type="submit">Start</button>
+        </form>
+
+    </div>
     <script src="./script.js"></script>
 </body>
 </html>

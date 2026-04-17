@@ -1,3 +1,12 @@
+const player1 = document.getElementById("player1");
+const player2 = document.getElementById("player2");
+const pl1score = document.getElementById("scorePl1");
+const pl2score = document.getElementById("scorePl2");
+const gameBoard = document.getElementById("tiktaktoe");
+const newMatch = document.getElementById("newMatch");
+const newGame = document.getElementById("newGame");
+const form = document.getElementById("form");
+
 function createGame() {  
     let players = [];
     let game = [
@@ -35,30 +44,24 @@ function createGame() {
                 
             
         },
-        printGame: function() {
-            console.log(game);
-            console.log({ winner, });
+        getGame: function() {
+            return game;
         },
         addPlayer: function (name) {
             (players.length < 2)? players.push(name): alert("Already two players in the game");
             
         },
-        makeMove: function () {
+        makeMove: function (move) {
             let player = moves % 2;
-            let move = prompt(`${players[player]} make your move!`).split(" ").map(a => Number(a) - 1);
-
-            while(game[move[0]][move[1]] != 0 ){
-                move = prompt(`${players[player]} this field is already taken!`).split(" ").map(a => Number(a) - 1);
-            }
             
             game[move[0]][move[1]] = player + 1;
             moves++;
 
         },
 
-    }
+    };
 
-}
+};
 
 function createPlayer(name){
     let playerScore = 0;
@@ -73,22 +76,47 @@ function createPlayer(name){
         getName: function(){
             return name;
         },
-    }
-}
+    };
+};
 
-const Game1 = createGame();
-const Player1 = createPlayer(prompt("Input Name Player1"));
-const Player2 = createPlayer(prompt("Input Name Player2"));
+let Game, Player1, Player2;
 
-Game1.addPlayer(Player1.getName());
-Game1.addPlayer(Player2.getName());
-Game1.printGame();
 
-while(!Game1.checkGame()){
-    Game1.makeMove();
-    Game1.printGame();
-}
-Game1.printGame();
+for(let i = 0; i < 3; i++){
+    for(let j = 0; j < 3; j++){
+        const field = document.createElement("button");
+        field.dataset.row = i;
+        field.dataset.column = j;
+
+        field.addEventListener('click', () => {
+            const gameCopy = Game.getGame;
+            if(gameCopy[i][j] === 0){
+                Game.makeMove([i, j])
+            }
+        });
+    };
+};
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const data = new FormData(form);
+    Game = createGame();
+    Player1 = createPlayer(data.get("pl1name"));
+    Player2 = createPlayer(data.get("pl2name"));
+
+    Game.addPlayer(Player1.getName());
+    Game.addPlayer(Player2.getName());
+
+    form.style.visibility = "hidden";
+
+});
+
+
+
+
+
+
 
 
 
