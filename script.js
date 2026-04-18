@@ -1,11 +1,12 @@
-const player1 = document.getElementById("player1");
-const player2 = document.getElementById("player2");
+const player1 = document.getElementById("Player1");
+const player2 = document.getElementById("Player2");
 const pl1score = document.getElementById("scorePl1");
 const pl2score = document.getElementById("scorePl2");
 const gameBoard = document.getElementById("tiktaktoe");
 const newMatch = document.getElementById("newMatch");
 const newGame = document.getElementById("newGame");
 const form = document.getElementById("form");
+const startBackground = document.getElementById("startGame");
 
 function createGame() {  
     let players = [];
@@ -58,6 +59,13 @@ function createGame() {
             moves++;
 
         },
+        checkField: function (x,y) {
+            return game[x][y] === 0;
+        },
+
+        getPlayersTurn: function(){
+            return moves % 2;
+        },
 
     };
 
@@ -79,36 +87,69 @@ function createPlayer(name){
     };
 };
 
-let Game, Player1, Player2;
+function initiateGame(PlayerName1, PlayerName2) {
+    let Game, Player1, Player2;
 
+    Game = createGame();
 
-for(let i = 0; i < 3; i++){
-    for(let j = 0; j < 3; j++){
-        const field = document.createElement("button");
-        field.dataset.row = i;
-        field.dataset.column = j;
+    Player1 = createPlayer(PlayerName1);
+    Player2 = createPlayer(PlayerName2);
 
-        field.addEventListener('click', () => {
-            const gameCopy = Game.getGame;
-            if(gameCopy[i][j] === 0){
-                Game.makeMove([i, j])
-            }
-        });
+    Game.addPlayer(Player1.getName());
+    Game.addPlayer(Player2.getName());
+
+    player1.textContent = Player1.getName();
+    player2.textContent = Player2.getName();
+    pl1score.textContent = Player1.getScore();
+    pl2score.textContent = Player2.getScore();
+
+    for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+            const field = document.createElement("button");
+
+            field.dataset.row = i;
+            field.dataset.column = j;
+
+            field.addEventListener('click', () => {
+
+                if(Game.checkField(field.dataset.row, field.dataset.column)){
+
+                    const icon = document.createElement("img");
+
+                    if(Game.getPlayersTurn()){
+                        icon.src = "./Images/circle.png";
+                    } else {
+                        icon.src = "./Images/close.png";
+                    }
+
+                    Game.makeMove([i, j])
+
+                    field.appendChild(icon);
+
+                    if(Game.checkGame()){
+                        gameBoard.replaceChildren();
+                        startBackground.style.visibility = "visible";
+                    }
+                }
+
+            });
+
+            gameBoard.append(field);
+        };
     };
-};
+}
+
+
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const data = new FormData(form);
-    Game = createGame();
-    Player1 = createPlayer(data.get("pl1name"));
-    Player2 = createPlayer(data.get("pl2name"));
+    
+    initiateGame(data.get("pl1name"), data.get("pl2name"));
 
-    Game.addPlayer(Player1.getName());
-    Game.addPlayer(Player2.getName());
-
-    form.style.visibility = "hidden";
+    startBackground.style.visibility = "hidden";
+    form.reset();
 
 });
 
