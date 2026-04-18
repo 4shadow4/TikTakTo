@@ -4,9 +4,12 @@ const pl1score = document.getElementById("scorePl1");
 const pl2score = document.getElementById("scorePl2");
 const gameBoard = document.getElementById("tiktaktoe");
 const newMatch = document.getElementById("newMatch");
-const newGame = document.getElementById("newGame");
+const newGameButtons = document.querySelectorAll(".newGame");
 const form = document.getElementById("form");
 const startBackground = document.getElementById("startGame");
+const endGame = document.getElementById("endGame");
+const displayText = document.getElementById("displayText");
+
 
 function createGame() {  
     let players = [];
@@ -41,12 +44,12 @@ function createGame() {
                 check(0,1,1,0) ||
                 check(0,2,1,0) ||
                 check(0,0,1,1) ||
-                check(2,2,-1,-1));
+                check(2,0,-1,1));
                 
             
         },
-        getGame: function() {
-            return game;
+        getWinner: function() {
+            return winner;
         },
         addPlayer: function (name) {
             (players.length < 2)? players.push(name): alert("Already two players in the game");
@@ -65,6 +68,16 @@ function createGame() {
 
         getPlayersTurn: function(){
             return moves % 2;
+        },
+
+        resetGame: () => {
+            game = [
+                [0,0,0],
+                [0,0,0],
+                [0,0,0],
+            ]
+
+            moves = 0;
         },
 
     };
@@ -89,7 +102,7 @@ function createPlayer(name){
 
 function initiateGame(PlayerName1, PlayerName2) {
     let Game, Player1, Player2;
-
+    let Tiles = [];
     Game = createGame();
 
     Player1 = createPlayer(PlayerName1);
@@ -106,7 +119,7 @@ function initiateGame(PlayerName1, PlayerName2) {
     for(let i = 0; i < 3; i++){
         for(let j = 0; j < 3; j++){
             const field = document.createElement("button");
-
+            Tiles.push(field);
             field.dataset.row = i;
             field.dataset.column = j;
 
@@ -114,21 +127,18 @@ function initiateGame(PlayerName1, PlayerName2) {
 
                 if(Game.checkField(field.dataset.row, field.dataset.column)){
 
-                    const icon = document.createElement("img");
-
-                    if(Game.getPlayersTurn()){
-                        icon.src = "./Images/circle.png";
-                    } else {
-                        icon.src = "./Images/close.png";
-                    }
-
                     Game.makeMove([i, j])
-
-                    field.appendChild(icon);
+                    field.textContent = Game.getPlayersTurn()? "X": "O";
 
                     if(Game.checkGame()){
-                        gameBoard.replaceChildren();
-                        startBackground.style.visibility = "visible";
+                        
+                        displayText.textContent = `${Game.getWinner()} won!`;
+                        (Player1.getName() === Game.getWinner())? Player1.increaseScore(): Player2.increaseScore();
+
+                        pl1score.textContent = Player1.getScore();
+                        pl2score.textContent = Player2.getScore();
+
+                        endGame.style.visibility = "visible";
                     }
                 }
 
@@ -137,6 +147,22 @@ function initiateGame(PlayerName1, PlayerName2) {
             gameBoard.append(field);
         };
     };
+
+    newGameButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            Tiles.forEach(tile => {
+                tile.textContent = "";
+            });
+            Game.resetGame();
+
+            endGame.style.visibility = "hidden";
+        });
+    });
+    newMatch.addEventListener('click', () => {
+    
+    gameBoard.replaceChildren();
+    startBackground.style.visibility = "visible";
+});
 }
 
 
@@ -152,6 +178,8 @@ form.addEventListener('submit', (e) => {
     form.reset();
 
 });
+
+
 
 
 
