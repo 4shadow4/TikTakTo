@@ -48,6 +48,18 @@ function createGame() {
                 
             
         },
+        checkDraw: () => {
+            let draw = true;
+            game.forEach(row => {
+                row.forEach(tile => {
+                    if(tile === 0){
+                        draw = false;
+                    }
+                });
+            });
+
+            return draw;
+        },
         getWinner: function() {
             return winner;
         },
@@ -131,13 +143,17 @@ function initiateGame(PlayerName1, PlayerName2) {
                     field.textContent = Game.getPlayersTurn()? "X": "O";
 
                     if(Game.checkGame()){
-                        
+                    
                         displayText.textContent = `${Game.getWinner()} won!`;
                         (Player1.getName() === Game.getWinner())? Player1.increaseScore(): Player2.increaseScore();
 
                         pl1score.textContent = Player1.getScore();
                         pl2score.textContent = Player2.getScore();
+                
+                        endGame.style.visibility = "visible";
 
+                    } else if(Game.checkDraw()){
+                        displayText.textContent = "Draw!";
                         endGame.style.visibility = "visible";
                     }
                 }
